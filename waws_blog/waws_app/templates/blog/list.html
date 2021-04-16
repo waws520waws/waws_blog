@@ -1,0 +1,221 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>列表页-WAWS个人博客</title>
+<meta name="keywords" content="blog" />
+<meta name="description" content="blog" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../../static/admin/images/bitbug_favicon.ico" type="image/ico">
+<link href="../../static/blog/css/base.css" rel="stylesheet">
+<link href="../../static/blog/css/m.css" rel="stylesheet">
+<script src="../../static/blog/js/jquery-1.8.3.min.js" ></script>
+<script src="../../static/blog/js/comm.js"></script>
+<!--[if lt IE 9]>
+    <script src="../../static/blog/js/modernizr.js"></script>
+    <![endif]-->
+<style type="text/css">
+  /*设置div样式的整体布局*/
+  .page-icon{
+      margin:20px 0 0 0;/*设置距离顶部20像素*/
+      font-size:0;/*修复行内元素之间空隙间隔*/
+      text-align:center;/*设置内容居中显示*/
+  }
+
+  /*设置共有的的样式布局，主要是进行代码优化，提高运行效率*/
+  .page-icon a,.page-disabled,.page-next{
+      border:1px solid #ccc;
+      border-radius:3px;
+      padding:4px 10px 5px;
+      font-size:14PX;/*修复行内元素之间空隙间隔*/
+      margin-right:10px;
+  }
+
+  /*对 a 标签进行样式布局 */
+  .page-icon a{
+      text-decoration:none;/*取消链接的下划线*/
+      color:#005aa0;
+  }
+
+  .page-current{
+      color:#ff6600;
+      padding:4px 10px 5px;
+      font-size:14PX;/*修复行内元素之间空隙间隔*/
+  }
+
+  .page-disabled{
+      color:#ccc;
+  }
+
+  .page-next i,.page-disabled i{
+      cursor:pointer;/*设置鼠标经过时的显示状态，这里设置的是显示状态为小手状态*/
+      display:inline-block;/*设置显示的方式为行内块元素*/
+      width:5px;
+      height:9px;
+      background-image:url(http://img.mukewang.com/547fdbc60001bab900880700.gif);/*获取图标的背景链接*/
+  }
+  .page-disabled i{
+      background-position:-80px -608px;
+      margin-right:3px;
+  }
+
+  .page-next i{
+      background-position:-62px -608px;
+      margin-left:3px;
+  }
+</style>
+</head>
+<body>
+<!--top begin-->
+<header id="header">
+  <div class="navbox">
+    <h2 id="mnavh"><span class="navicon"></span></h2>
+    <div class="logo"><a href="/?page=1">WAWS个人博客</a></div>
+    <nav>
+      <ul id="starlist">
+        <li><a href="/?page=1">首页</a></li>
+        <li><a href="/list">最新文章列表</a></li>
+        <li class="menu"><a href="/list2">文章类别</a>
+          <ul class="sub">
+            {% for category in category_list %}
+            <li><a href="/list2?category_id={{ category.id}}">{{category.doc}}</a></li>
+            {% endfor %}
+          </ul>
+          <span></span></li>
+        <li><a href="/list3">网页设计心得</a></li>
+        <li><a href="/daohang">优秀博客</a></li>
+        <li><a href="/about">关于我</a></li>
+        <li><a href="/time">时间轴</a></li>
+      </ul>
+    </nav>
+    <div class="searchico"></div>
+  </div>
+</header>
+<div class="searchbox">
+  <div class="search">
+    <form action="/e/search/index.php" method="post" name="searchform" id="searchform">
+      <input name="keyboard" id="keyboard" class="input_text" value="请输入关键字词" style="color: rgb(153, 153, 153);" onfocus="if(value=='请输入关键字词'){this.style.color='#000';value=''}" onblur="if(value==''){this.style.color='#999';value='请输入关键字词'}" type="text">
+      <input name="show" value="title" type="hidden">
+      <input name="tempid" value="1" type="hidden">
+      <input name="tbname" value="news" type="hidden">
+      <input name="Submit" class="input_submit" value="搜索" type="submit">
+    </form>
+  </div>
+  <div class="searchclose"></div>
+</div>
+<!--top end-->
+<article> 
+  <!--lbox begin-->
+  <div class="lbox">
+    <div class="whitebg lanmu"> <img src="../../static/blog/images/lm01.jpg">
+      <h1>个人博客</h1>
+      <p>个人博客笔记，记录一些学习过程中遇到的笔记和问题的解决方法，为自己开发保留当时的想法和处理问题的过程、为他人提供一些经验和教程方法，多多交流，长期进步。</p>
+    </div>
+    <div class="whitebg bloglist">
+      <h2 class="htitle">最新博文</h2>
+      <ul>
+        <!--多图模式 置顶设计-->
+        {% for sticky in sticky_list %}
+        <li>
+          <h3 class="blogtitle"><a href="/" target="_blank"><b>【顶】</b>{{ sticky.title }}</a></h3>
+          <span class="bplist">
+            {% for pic in sticky.pics %}}
+            <a href="/info?article_id={{ sticky.id }}"> <img src="{{ pic.url }}" alt=""></a>
+            {% endfor %}
+          </span>
+          <p class="blogtext">{{ sticky.info }} </p>
+          <p class="bloginfo"><i class="avatar"><img src="../../static/blog/images/avatar.jpg"></i><span>{{ sticky.author }}</span><span>{{ sticky.date}}</span><span>【<a href="/">{{ sticky.category }}</a>】</span></p>
+        </li>
+        {% endfor %}
+        <!--单图-->
+        {% for article in article_list %}
+        {% if article.style == 1 %}
+        <li>
+          <h3 class="blogtitle"><a href="/info?article_id={{ article.id }}" target="_blank">{{ article.title}}</a></h3>
+          <span class="blogpic imgscale"><i><a href="/">原创模板</a></i><a href="/info?article_id={{ article.id }}" title=""><img src="{{ article.pic }}" alt=""></a></span>
+          <p class="blogtext">{{ article.info }}</p>
+          <p class="bloginfo"><i class="avatar"><img src="../../static/blog/images/avatar.jpg"></i><span>{{ article.author }}</span><span>{{ article.date}}</span><span>【<a href="/">{{ article.category }}</a>】</span></p>
+          <a href="/info?article_id={{ article.id }}" class="viewmore">阅读更多</a> </li>
+        <!--纯文字-->
+        {% else %}
+        <li>
+          <h3 class="blogtitle"><a href="/info?article_id={{ article.id }}" target="_blank">{{ article.title}}</a></h3>
+          <p class="blogtext">{{ article.info }}</p>
+          <p class="bloginfo"><i class="avatar"><img src="../../static/blog/images/avatar.jpg"></i><span>{{ article.author }}</span><span>{{ article.date}}</span><span>【<a href="/">{{ article.category }}</a>】</span></p>
+          <a href="/info?article_id={{ article.id }}" class="viewmore">阅读更多</a> </li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+      <!--pagelist-->
+      <div class="page-icon">
+          <a style="margin-right: 300px" href="/list?page={{ page_previous }}">上一页<i></i></a>
+          <a href="/list?page={{ page_next }}">下一页<i></i></a>
+      </div>
+      <!--pagelist end--> 
+    </div>
+    
+    <!--bloglist end--> 
+  </div>
+  <div class="rbox">
+    <div class="whitebg paihang">
+      <h2 class="htitle">点击排行</h2>
+      <section class="topnews imgscale"><a href="/info?article_id={{first_click_dict.id}}"><img src="../../static/blog/images/h1.jpg"><span>{{first_click_dict.title}}</span></a></section>
+      <ul>
+        {% for click in click_list%}
+        <li><i></i><a href="/info?article_id={{ click.id }}">{{click.title}}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="whitebg tuijian">
+      <h2 class="htitle">站长推荐</h2>
+      <section class="topnews imgscale"><a href="/info?article_id={{ first_like_dict.id }}"><img src="../../static/blog/images/h2.jpg"><span>{{ first_like_dict.title }}</span></a></section>
+      <ul>
+        {% for like in like_list %}
+        <li><a href="/info?article_id={{ like.id }}"><i><img src="../../static/blog/images/text0{{loop.index}}.jpg"></i>
+          <p>{{ like.title }}</p>
+          </a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="ad whitebg imgscale">
+      <ul>
+        <a href="/"><img src="../../static/blog/images/14.jpg"></a>
+      </ul>
+    </div>
+    <div class="whitebg cloud">
+      <h2 class="htitle">标签云</h2>
+      <ul>
+        {%  for tag in tag_list %}
+            <a href="#" target="_blank">{{ tag.name }}</a>
+          {% endfor %}
+      </ul>
+    </div>
+    <div class="whitebg wenzi">
+      <h2 class="htitle">猜你喜欢</h2>
+      <ul>
+        {% for guess in guess_list %}
+        <li><a href="/info?article_id={{ guess.id }}">{{ guess.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</article>
+<footer>
+  <div class="box">
+    <div class="wxbox">
+      <ul>
+        <li><img src="../../static/blog/images/wxgzh.jpg"><span>微信公众号</span></li>
+        <li><img src="../../static/blog/images/wx.png"><span>我的微信</span></li>
+      </ul>
+    </div>
+    <div class="endnav">
+      <p><b>站点声明：</b></p>
+      <p>1、此为个人博客，均为WAWS本人设计，只为记录和学习互联网知识使用，希望可以将个人经验和技术让更多人看到，互相进步。</p>
+      <p>2、所有文章有原创和转载、摘编、不做商业用途，如有侵犯他人的版权，及时联系，以做修正。联系邮箱：<a href="#" target="_blank">16601203140@163.com</a></p>
+    </div>
+  </div>
+  <a href="#">
+  <div class="top"></div>
+  </a> </footer>
+</body>
+</html>
